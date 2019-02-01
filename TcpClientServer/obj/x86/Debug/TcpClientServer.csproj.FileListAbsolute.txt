@@ -1,0 +1,9 @@
+F:\Daivshala\TcpClientServer\TcpClientServer\bin\Debug\TcpClientServer.exe
+F:\Daivshala\TcpClientServer\TcpClientServer\bin\Debug\TcpClientServer.pdb
+F:\Daivshala\TcpClientServer\TcpClientServer\obj\x86\Debug\TcpClientServer.Properties.Resources.resources
+F:\Daivshala\TcpClientServer\TcpClientServer\obj\x86\Debug\TcpClientServer.csproj.GenerateResource.Cache
+F:\Daivshala\TcpClientServer\TcpClientServer\obj\x86\Debug\TcpClientServer.exe
+F:\Daivshala\TcpClientServer\TcpClientServer\obj\x86\Debug\TcpClientServer.pdb
+F:\Daivshala\TcpClientServer\TcpClientServer\obj\x86\Debug\TcpClientServer.Client.resources
+F:\Daivshala\TcpClientServer\TcpClientServer\obj\x86\Debug\TcpClientServer.Server.resources
+F:\Daivshala\TcpClientServer\TcpClientServer\obj\x86\Debug\TcpClientServer.csprojResolveAssemblyReference.cache

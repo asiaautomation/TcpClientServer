@@ -1,0 +1,8 @@
+F:\Daivshala\ClientTcp\ClientTcp\obj\x86\Debug\ClientTcp.Form1.resources
+F:\Daivshala\ClientTcp\ClientTcp\obj\x86\Debug\ClientTcp.Properties.Resources.resources
+F:\Daivshala\ClientTcp\ClientTcp\obj\x86\Debug\ClientTcp.csproj.GenerateResource.Cache
+F:\Daivshala\ClientTcp\ClientTcp\bin\Debug\ClientTcp.exe
+F:\Daivshala\ClientTcp\ClientTcp\bin\Debug\ClientTcp.pdb
+F:\Daivshala\ClientTcp\ClientTcp\obj\x86\Debug\ClientTcp.exe
+F:\Daivshala\ClientTcp\ClientTcp\obj\x86\Debug\ClientTcp.pdb
+F:\Daivshala\ClientTcp\ClientTcp\obj\x86\Debug\ClientTcp.csprojResolveAssemblyReference.cache

@@ -6,14 +6,22 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Net;
+using System.Net.Sockets;
+using System.IO;
 
 namespace TcpClientServer
 {
-    public partial class Form1 : Form
+    public partial class Client : Form
     {
-        public Form1()
+        public Client()
         {
             InitializeComponent();
+        }
+
+        private void Client_Load(object sender, EventArgs e)
+        {
+           
         }
     }
 }
