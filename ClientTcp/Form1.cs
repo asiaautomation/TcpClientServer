@@ -17,13 +17,13 @@ namespace ClientTcp
     {
         delegate void SetTextCallback(string text);
 
-
         Boolean connected = false;
         TcpClient client;
 
         NetworkStream ns;
         
         Thread t = null;
+        int disconnect = 0;
 
        // IPAddress ipAdd;
       //  int port = 4545;
@@ -49,32 +49,66 @@ namespace ClientTcp
 
          //   t.Start();
         }
-        public void connect()
+        public Boolean connect()
         {
+
             try
             {
                 client = new TcpClient(textBox2.Text, 4545);
                 connected = true;
+                textBox1.Enabled = true;
+                button1.Enabled = true;
+
+
+                return true;
+
             }
-            catch(SocketException SE)
+            catch (SocketException SE)
             {
                 MessageBox.Show("enter correct Address");
+                return false;
             }
+            
+         
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            textBox1.Enabled = false;
+            richTextBox1.Enabled = false;
+            button1.Enabled = false;
+         
+            
 
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            String s = "\n"+"Client : "+textBox1.Text;
-            textBox1.Text = " ";
-            richTextBox1.Text = richTextBox1.Text + s;
-            byte[] byteTime = Encoding.ASCII.GetBytes(s);
+            try
+            {
 
-            ns.Write(byteTime, 0, byteTime.Length);
+                String s = "\n" + "Client : " + textBox1.Text;
+                textBox1.Text = " ";
+                richTextBox1.Text = richTextBox1.Text + s;
+                byte[] byteTime = Encoding.ASCII.GetBytes(s);
+
+                ns.Write(byteTime, 0, byteTime.Length);
+                disconnect = 1;
+            }
+            catch (Exception sed)
+            {
+                MessageBox.Show("Server Disconected");
+            }
+
+            finally
+            {
+                if (disconnect == 0)
+                {
+
+                    button1.Enabled = false;
+                    textBox1.Enabled = false;
+                }
+            }
               
         }
         public void DoWork()
@@ -83,6 +117,7 @@ namespace ClientTcp
             byte[] bytes = new byte[1024];
             try
             {
+                
                 while (true)
                 {
 
@@ -93,13 +128,24 @@ namespace ClientTcp
 
 
                 }
+
             }
-            catch(System.IO.IOException e)
+            catch (System.IO.IOException e)
             {
                 ns.Close();
                 client.Close();
+
+
                 this.SetText("\n Server Disconnected");
+
+
             }
+           
+                if (disconnect == 1)
+                {
+                    button1.Enabled = false;
+                }
+            
             
       
             
@@ -140,10 +186,10 @@ namespace ClientTcp
             {
                 MessageBox.Show("Enter Ip Address Of SERver");
             }
-            {
+            else {
 
                 connect();
-                if (connected == true)
+                if(connected == true)
                 {
                     ns = client.GetStream();
 
@@ -162,8 +208,10 @@ namespace ClientTcp
                     t = new Thread(DoWork);
 
                     t.Start();
-
+                 
                     richTextBox1.Text = richTextBox1.Text + "\n Server Connected";
+                    connected = false;
+                   
                 }
             }
 

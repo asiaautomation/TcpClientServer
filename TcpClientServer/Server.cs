@@ -24,7 +24,7 @@ namespace TcpClientServer
 
 
 
-        delegate void SetTextCallback(string text);
+     delegate void SetTextCallback(string text);
 
         TcpListener listener;
 
@@ -32,6 +32,7 @@ namespace TcpClientServer
         IPAddress localAdd;
 
         NetworkStream ns;
+        String strHostName = string.Empty;
 
         Thread t = null;
 
@@ -41,26 +42,38 @@ namespace TcpClientServer
         public Server()
         {
             InitializeComponent();
-             localAdd = IPAddress.Parse("192.168.0.5");
-            listener = new TcpListener(localAdd,4545);
-
-            listener.Start();
-
-          client = listener.AcceptTcpClient();
-
-            ns = client.GetStream();
-
-            t = new Thread(DoWork);
-           
-
-            t.Start();
+            
             
         }
 
 
         private void Server_Load(object sender, EventArgs e)
         {
+            IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
 
+            {
+                foreach (IPAddress localAdd in localIPs)
+                {
+                    if (localAdd.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        Console.WriteLine(localAdd);
+                        listener = new TcpListener(localAdd, 4545);
+                    }
+                }
+            }
+
+
+
+            listener.Start();
+
+            client = listener.AcceptTcpClient();
+
+            ns = client.GetStream();
+
+            t = new Thread(DoWork);
+
+
+            t.Start();
         }
 
         private void button1_Click(object sender, EventArgs e)
