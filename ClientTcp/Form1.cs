@@ -18,7 +18,7 @@ namespace ClientTcp
         delegate void SetTextCallback(string text);
 
 
-
+        Boolean connected = false;
         TcpClient client;
 
         NetworkStream ns;
@@ -48,6 +48,18 @@ namespace ClientTcp
        //    t = new Thread(DoWork);
 
          //   t.Start();
+        }
+        public void connect()
+        {
+            try
+            {
+                client = new TcpClient(textBox2.Text, 4545);
+                connected = true;
+            }
+            catch(SocketException SE)
+            {
+                MessageBox.Show("enter correct Address");
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -121,24 +133,40 @@ namespace ClientTcp
 
         private void button2_Click(object sender, EventArgs e)
         {
-          //  ipAdd = IPAddress.Parse("192.168.0.5");
-            
-            
-            client = new TcpClient("192.168.0.5",4545);
 
-            ns = client.GetStream();
+            //   ipAdd = IPAddress.Parse(textBox2.Text);
 
-            String s = "Client Connected";
+            if (textBox2.Text == "")
+            {
+                MessageBox.Show("Enter Ip Address Of SERver");
+            }
+            {
 
-            byte[] byteTime = Encoding.ASCII.GetBytes(s);
+                connect();
+                if (connected == true)
+                {
+                    ns = client.GetStream();
 
-            ns.Write(byteTime, 0, byteTime.Length);
 
 
-            t = new Thread(DoWork);
 
-            t.Start();
-            richTextBox1.Text = richTextBox1.Text + "\n Server Connected";
+
+
+                    String s = "Client Connected";
+
+                    byte[] byteTime = Encoding.ASCII.GetBytes(s);
+
+                    ns.Write(byteTime, 0, byteTime.Length);
+
+                    textBox2.Text = " ";
+                    t = new Thread(DoWork);
+
+                    t.Start();
+
+                    richTextBox1.Text = richTextBox1.Text + "\n Server Connected";
+                }
+            }
+
         }
     }
 }
