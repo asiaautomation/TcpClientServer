@@ -15,57 +15,130 @@ namespace ClientTcp
 {
     public partial class Form1 : Form
     {
-        const int PORT_NO = 5000;
-        const string SERVER_IP = "192.168.0.5";
-        string textToSend;
+        delegate void SetTextCallback(string text);
+
+
+
         TcpClient client;
-        NetworkStream nwStream;
+
+        NetworkStream ns;
+        
+        Thread t = null;
+
+       // IPAddress ipAdd;
+      //  int port = 4545;
+
+ 
        
         public Form1()
         {
             InitializeComponent();
+            
+            //client = new TcpClient("192.168.0.5",4545 );
+
+           // ns = client.GetStream();
+
+           // String s = "Connected";
+
+         //   byte[] byteTime = Encoding.ASCII.GetBytes(s);
+
+         //   ns.Write(byteTime, 0, byteTime.Length);
+
+
+       //    t = new Thread(DoWork);
+
+         //   t.Start();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
 
-
-
-
-
-             client = new TcpClient(SERVER_IP, PORT_NO);
-             nwStream = client.GetStream();
-           
-            textToSend = "hye";
-            byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(textToSend);
-
-            //---send the text---
-            Console.WriteLine("Sending : " + textToSend);
-          
-            nwStream.Write(bytesToSend, 0, bytesToSend.Length);
-
-            //---read back the text---
-            byte[] bytesToRead = new byte[client.ReceiveBufferSize];
-            int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
-            Console.WriteLine("Received : " + Encoding.ASCII.GetString(bytesToRead, 0, bytesRead));
-            label1.Text = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
-            Console.ReadLine();
-            client.Close();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            client = new TcpClient(SERVER_IP, PORT_NO);
-            nwStream = client.GetStream();
-            textToSend = textBox1.Text;
-            byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(textToSend);
+            String s = "\n"+"Client : "+textBox1.Text;
+            textBox1.Text = " ";
+            richTextBox1.Text = richTextBox1.Text + s;
+            byte[] byteTime = Encoding.ASCII.GetBytes(s);
+
+            ns.Write(byteTime, 0, byteTime.Length);
+              
+        }
+        public void DoWork()
+        {
+
+            byte[] bytes = new byte[1024];
+            try
+            {
+                while (true)
+                {
+
+                    int bytesRead = ns.Read(bytes, 0, bytes.Length);
+
+                    this.SetText(Encoding.ASCII.GetString(bytes, 0, bytesRead));
+
+
+
+                }
+            }
+            catch(System.IO.IOException e)
+            {
+                ns.Close();
+                client.Close();
+                this.SetText("\n Server Disconnected");
+            }
+            
+      
+            
+
+        }
+        private void SetText(string text)
+        {
 
            
-            Console.WriteLine("Sending : " + textToSend);
 
-            nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                if (this.richTextBox1.InvokeRequired)
+                {
+
+                    SetTextCallback d = new SetTextCallback(SetText);
+
+                    this.Invoke(d, new object[] { text });
+
+                }
+
+                else
+                {
+                    this.richTextBox1.Text = this.richTextBox1.Text + "  ";
+                    this.richTextBox1.Text = this.richTextBox1.Text + text;
+
+                }
+     
+      
+           
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+          //  ipAdd = IPAddress.Parse("192.168.0.5");
+            
+            
+            client = new TcpClient("192.168.0.5",4545);
+
+            ns = client.GetStream();
+
+            String s = "Client Connected";
+
+            byte[] byteTime = Encoding.ASCII.GetBytes(s);
+
+            ns.Write(byteTime, 0, byteTime.Length);
 
 
+            t = new Thread(DoWork);
+
+            t.Start();
+            richTextBox1.Text = richTextBox1.Text + "\n Server Connected";
         }
     }
 }

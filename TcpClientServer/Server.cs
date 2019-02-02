@@ -11,6 +11,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.IO;
 
+
 using System.Collections; 
 
 
@@ -23,64 +24,111 @@ namespace TcpClientServer
 
 
 
+        delegate void SetTextCallback(string text);
 
-
-
-        const int PORT_NO = 5000;
-        const string SERVER_IP = "192.168.0.5";
-        IPAddress localAdd;
         TcpListener listener;
+
         TcpClient client;
-        NetworkStream nwStream;
+        IPAddress localAdd;
+
+        NetworkStream ns;
+
+        Thread t = null;
+
+
+      
+        
         public Server()
         {
             InitializeComponent();
-        }
+             localAdd = IPAddress.Parse("192.168.0.5");
+            listener = new TcpListener(localAdd,4545);
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-
-
-
-            localAdd = IPAddress.Parse(SERVER_IP);
-             listener = new TcpListener(localAdd, PORT_NO);
-            Console.WriteLine("Listening...");
             listener.Start();
 
-            //---incoming client connected---
-            client = listener.AcceptTcpClient();
+          client = listener.AcceptTcpClient();
 
-            //---get the incoming data through a network stream---
-            NetworkStream nwStream = client.GetStream();
+            ns = client.GetStream();
 
-            byte[] buffer = new byte[client.ReceiveBufferSize];
-        
-            //---read incoming stream---
-            int bytesRead = nwStream.Read(buffer, 0, client.ReceiveBufferSize);
+            t = new Thread(DoWork);
+           
 
-            //---convert the data received into a string---
-            string dataReceived = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-            Console.WriteLine("Received : " + dataReceived);
-            label2.Text = dataReceived;
-            //---write back the text to the client---
-            Console.WriteLine("Sending back : " + dataReceived);
-            nwStream.Write(buffer, 0, bytesRead);
-            client.Close();
-            listener.Stop();
-            Console.ReadLine();
-
-
-
-
+            t.Start();
+            
         }
 
+
+        private void Server_Load(object sender, EventArgs e)
+        {
+
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            String str = textBox1.Text;
-            byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(str);
-            nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+            
+                String s = "\n" + "Server : " + textBox1.Text;
+                textBox1.Text = " ";
+                richTextBox1.Text = richTextBox1.Text + s;
+
+
+                byte[] byteTime = Encoding.ASCII.GetBytes(s);
+
+                ns.Write(byteTime, 0, byteTime.Length);
+            
+          
+        }
+        public void DoWork()
+        {
+            
+          
+                byte[] bytes = new byte[1024];
+                try
+                {
+                    while (true)
+                    {
+
+                        int bytesRead = ns.Read(bytes, 0, bytes.Length);
+
+                        this.SetText(Encoding.ASCII.GetString(bytes, 0, bytesRead));
+
+
+                    }
+                }
+                catch (System.IO.IOException e)
+                {
+                    
+                    ns.Close();
+                    client.Close();
+                    this.SetText("\n Client Disconnected....");
+                }
+               
+            }
+            
+          
+          
+
+        
+        private void SetText(string text)
+        {
+
+
+
+            if (this.richTextBox1.InvokeRequired)
+            {
+
+                SetTextCallback d = new SetTextCallback(SetText);
+
+                this.Invoke(d, new object[] { text });
+
+            }
+
+            else
+            {
+                
+                this.richTextBox1.Text = this.richTextBox1.Text + text;
+
+            }
+
         }
     }
 }
